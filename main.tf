@@ -125,7 +125,7 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
       type        = "Service"
       identifiers = [
         "ecs-tasks.amazonaws.com",
-         "ec2.amazonaws.com",
+        "ec2.amazonaws.com",
         "ecs.amazonaws.com"
       ]
     }
