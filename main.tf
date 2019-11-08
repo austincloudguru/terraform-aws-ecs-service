@@ -10,21 +10,10 @@ data "template_file" "task_definition" {
   template = <<EOF
 [
   {
-    "name": "jenkins-master",
-    "image": "jenkins/jenkins",
-    "cpu": 128,
-    "memory": 1024,
+    "name": "$${service_name}",
+    "image": "$${image_name}",
     "essential": true,
-    "portMappings": [
-      {
-        "containerPort": 8080,
-        "hostPort": 8080
-      },
-      {
-        "containerPort": 50000,
-        "hostPort": 50000
-      }
-    ],
+    "portMappings": [$${port_mappings}],
     "mountPoints": [
       {
         "sourceVolume": "jenkins_home",
@@ -34,13 +23,13 @@ data "template_file" "task_definition" {
   }
 ]
 EOF
-//  vars = {
-//    service_name = var.service_name
-//    image_name = var.image_name
-////    port_mappings = jsonencode(var.port_mappings)
-////    mount_points = jsonencode(var.mount_points)
-////    env_variables = jsonencode(var.env_variables)
-//  }
+  vars = {
+    service_name = var.service_name
+    image_name = var.image_name
+    port_mappings = jsonencode(var.port_mappings)
+//    mount_points = jsonencode(var.mount_points)
+//    env_variables = jsonencode(var.env_variables)
+  }
 }
 
 //data "template_file" "task_template" {
