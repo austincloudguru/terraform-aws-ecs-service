@@ -15,10 +15,10 @@ resource "aws_ecs_task_definition" "this" {
   execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsTaskExecutionRole"
   container_definitions = jsonencode([
     {
-      cpu          = 10
+      cpu          = var.service_cpu
       essential    = true
       image        = var.image_name
-      memory       = 128
+      memory       = var.service_memory
       name         = var.service_name
       portMappings = var.port_mappings
       mountPoints  = var.mount_points

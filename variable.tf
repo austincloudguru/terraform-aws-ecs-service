@@ -47,3 +47,15 @@ variable "task_volumes" {
 variable "service_desired_count" {
   description = "Desired Number of Instances to run"
 }
+
+variable "service_cpu" {
+  description = "CPU Units to Allocation"
+  type        = string
+  default     = 128
+}
+
+variable "service_memory" {
+  description = "Memory to Allocate"
+  type        = string
+  default     = 1024
+}
