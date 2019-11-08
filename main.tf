@@ -23,7 +23,7 @@ data "template_file" "task_definition" {
   vars = {
     service_name = var.service_name
     image_name = var.image_name
-    port_mappings = var.port_mappings
+    port_mappings = [var.port_mappings]
     mount_points = var.mount_points
     environment = var.env_variables
   }
