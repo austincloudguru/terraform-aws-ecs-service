@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "this" {
     }
   ])
   dynamic "volume" {
-    for_each = var.task_volumes
+    for_each = var.volumes
     content {
       name = volume.value.name
       host_path = lookup(volume.value, "host_path", null)
