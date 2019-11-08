@@ -15,7 +15,7 @@ variable "image_name" {
 
 variable "port_mappings" {
   description = "Port Mappings to deploy"
-  type = list(string)
+  type = list
   default = []
 
 //  portMappings = [
