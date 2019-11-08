@@ -59,3 +59,24 @@ variable "service_memory" {
   type        = number
   default     = 1024
 }
+
+variable "lb_name" {
+  description = "Name of the ALB to use"
+  type = string
+}
+
+variable "vpc_name" {
+  description = "Name of the VPC to work in"
+  type        = string
+}
+
+variable "tld" {
+  description = "Top Level Domain to use"
+  type        = string
+}
+
+variable "health_check_path" {
+  description = "Health Check Path"
+  type = string
+  default = "/"
+}
