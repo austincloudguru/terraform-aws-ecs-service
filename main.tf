@@ -23,7 +23,7 @@ data "aws_vpc" "this" {
 #------------------------------------------------------------------------------
 resource "aws_ecs_task_definition" "this" {
   family = var.service_name
-  execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsTaskExecutionRole"
+  execution_role_arn = aws_iam_role.ecs_exec_role.arn
   container_definitions = jsonencode([
     {
       cpu          = var.service_cpu
@@ -70,6 +70,49 @@ resource "aws_ecs_service" "main" {
 }
 
 #------------------------------------------------------------------------------
+# Create the executor role
+#------------------------------------------------------------------------------
+resource "aws_iam_role" "ecs_exec_role" {
+  name = "${var.service_name}-role"
+  path = "/"
+  assume_role_policy = data.aws_iam_policy_document.ecs_exec_assume_role_policy.json
+}
+
+resource "aws_iam_role_policy" "ecs_exec_role_policy" {
+  name = "${var.service_name}-policy"
+  role = aws_iam_role.ecs_exec_role.id
+  policy = data.aws_iam_policy_document.ecs_exec_policy.json
+}
+
+data "aws_iam_policy_document" "ecs_exec_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:GetAuthorizationToken",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["*"]
+  }
+}
+
+data "aws_iam_policy_document" "ecs_exec_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = [
+        "ecs-tasks.amazonaws.com"
+      ]
+    }
+  }
+}
+
+#------------------------------------------------------------------------------
 # Create an Instance Profile
 #------------------------------------------------------------------------------
 resource "aws_iam_instance_profile" "instance_profile" {
@@ -103,32 +146,6 @@ data "aws_iam_policy_document" "role_policy" {
     ]
     resources = ["*"]
   }
-   statement {
-    effect = "Allow"
-    actions = [
-      "ec2:DescribeInstances",
-      "ec2:TerminateInstances",
-      "ec2:RequestSpotInstances",
-      "ec2:DeleteTags",
-      "ec2:CreateTags",
-      "ec2:DescribeRegions",
-      "ec2:RunInstances",
-      "ec2:DescribeSpotIstanceRequests",
-      "ec2:StopInstances",
-      "ec2:DescribeSecurityGroups",
-      "ec2:GetConsoleOutput",
-      "ec2:DescribeSpotPriceHistory",
-      "ec2:DescribeImages",
-      "ec2:CancelSpotInstanceRequests",
-      "iam:PassRole",
-      "ec2:StartInstances",
-      "ec2:DescribeAvailabilityZones",
-      "ec2:DescribeSubnets",
-      "ec2:DescribeKeyPairs",
-    ]
-    resources = ["*"]
-  }
-
 }
 
 data "aws_iam_policy_document" "instance_assume_role_policy" {
@@ -138,9 +155,7 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
     principals {
       type        = "Service"
       identifiers = [
-        "ecs-tasks.amazonaws.com",
-        "ec2.amazonaws.com",
-        "ecs.amazonaws.com"
+        "ecs-tasks.amazonaws.com"
       ]
     }
   }
