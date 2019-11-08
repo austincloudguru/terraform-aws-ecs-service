@@ -13,16 +13,17 @@ variable "image_name" {
   type = string
 }
 
-variable "port_mappings" {
-  description = "Port Mappings to deploy"
-  type = list
-  default = []
-
-//  portMappings = [
-//    {
-//      containerPort = 27017
-//    },
-//  ]
+variable "container_port_mappings" {
+  type = list(object({
+    hostPort      = number
+    containerPort = number
+    protocol      = string
+  }))
+  default = [{
+    hostPort      = 12345
+    containerPort = 12345
+    protocol      = "tcp"
+  }]
 }
 
 variable "mount_points" {
