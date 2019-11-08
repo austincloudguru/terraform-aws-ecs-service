@@ -25,7 +25,7 @@ data "template_file" "task_definition" {
     image_name = var.image_name
     port_mappings = jsonencode(var.port_mappings)
     mount_points = jsonencode(var.mount_points)
-    environment = jsonencode(var.env_variables)
+    env_variables = jsonencode(var.env_variables)
   }
 }
 
