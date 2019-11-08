@@ -33,7 +33,7 @@ data "template_file" "task_definition" {
     ]
   }
 ]
-//EOF
+EOF
 //  vars = {
 //    service_name = var.service_name
 //    image_name = var.image_name
