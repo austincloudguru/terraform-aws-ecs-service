@@ -73,13 +73,13 @@ resource "aws_ecs_service" "main" {
 # Create the executor role
 #------------------------------------------------------------------------------
 resource "aws_iam_role" "ecs_exec_role" {
-  name = "${var.service_name}-role"
+  name = "${var.service_name}-exec"
   path = "/"
   assume_role_policy = data.aws_iam_policy_document.ecs_exec_assume_role_policy.json
 }
 
 resource "aws_iam_role_policy" "ecs_exec_role_policy" {
-  name = "${var.service_name}-policy"
+  name = "${var.service_name}-exec"
   role = aws_iam_role.ecs_exec_role.id
   policy = data.aws_iam_policy_document.ecs_exec_policy.json
 }
@@ -113,21 +113,16 @@ data "aws_iam_policy_document" "ecs_exec_assume_role_policy" {
 }
 
 #------------------------------------------------------------------------------
-# Create an Instance Profile
+# Create the task profile
 #------------------------------------------------------------------------------
-resource "aws_iam_instance_profile" "instance_profile" {
-  name = "${var.service_name}-instance_profile"
-  role = aws_iam_role.instance_role.name
-}
-
 resource "aws_iam_role" "instance_role" {
-  name = "${var.service_name}-role"
+  name = "${var.service_name}-task"
   path = "/"
   assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
 }
 
 resource "aws_iam_role_policy" "instance_role_policy" {
-  name = "${var.service_name}-policy"
+  name = "${var.service_name}-task"
   role = aws_iam_role.instance_role.id
   policy = data.aws_iam_policy_document.role_policy.json
 }
