@@ -38,12 +38,6 @@ variable "env_variables" {
   default = []
 }
 
-variable "task_volumes" {
-  description = "List of volume blocks for task definition"
-  type        = "list"
-  default     = []
-}
-
 variable "service_desired_count" {
   description = "Desired Number of Instances to run"
 }
