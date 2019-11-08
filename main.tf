@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
 #     app_name      Application Name for the Certificate
 #------------------------------------------------------------------------------
 data "aws_route53_zone" "external" {
-  name = var.tld
+  name = "${var.tld}."
 }
 
 resource "aws_acm_certificate" "acm_cert" {
@@ -189,7 +189,7 @@ resource "aws_route53_record" "alb_dns" {
   zone_id = data.aws_route53_zone.external.zone_id
   alias {
     evaluate_target_health = false
-    name                   = data.aws_lb.this.name
+    name                   = data.aws_lb.this.dns_name
     zone_id                = data.aws_lb.this.zone_id
   }
 }
