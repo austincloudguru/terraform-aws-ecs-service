@@ -54,6 +54,12 @@ resource "aws_ecs_task_definition" "this" {
       }
     }
   }
+   tags = merge(
+    {
+      "Name" = "${var.service_name}-td"
+    },
+    var.tags
+  )
 }
 
 resource "aws_ecs_service" "main" {
@@ -67,6 +73,12 @@ resource "aws_ecs_service" "main" {
     container_name = var.service_name
     container_port = lookup(var.port_mappings[0], "containerPort")
   }
+   tags = merge(
+    {
+      "Name" = "${var.service_name}"
+    },
+    var.tags
+  )
 }
 
 #------------------------------------------------------------------------------
@@ -76,6 +88,12 @@ resource "aws_iam_role" "ecs_exec_role" {
   name = "${var.service_name}-exec"
   path = "/"
   assume_role_policy = data.aws_iam_policy_document.ecs_exec_assume_role_policy.json
+   tags = merge(
+    {
+      "Name" = "${var.service_name}-exec"
+    },
+    var.tags
+  )
 }
 
 resource "aws_iam_role_policy" "ecs_exec_role_policy" {
@@ -125,6 +143,12 @@ resource "aws_iam_role_policy" "instance_role_policy" {
   name = "${var.service_name}-task"
   role = aws_iam_role.instance_role.id
   policy = data.aws_iam_policy_document.role_policy.json
+   tags = merge(
+    {
+      "Name" = "${var.ecs_cluster_name}-task"
+    },
+    var.tags
+  )
 }
 
 data "aws_iam_policy_document" "role_policy" {
@@ -217,6 +241,12 @@ resource "aws_lb_target_group" "https_target_group" {
     healthy_threshold = 2
     port = lookup(var.port_mappings[0], "hostPort")
   }
+   tags = merge(
+    {
+      "Name" = "${var.service_name}-ecs-tg"
+    },
+    var.tags
+  )
 }
 
 resource "aws_lb_listener_rule" "https_alb_listener_rule" {
