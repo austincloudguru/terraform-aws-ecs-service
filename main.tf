@@ -38,8 +38,6 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = data.template_file.task_definition.rendered
   family = var.service_name
   execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsTaskExecutionRole"
-
-  volume = var.task_volumes
 }
 
 resource "aws_ecs_service" "main" {
