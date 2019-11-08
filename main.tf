@@ -60,7 +60,7 @@ resource "aws_ecs_task_definition" "this" {
 
 resource "aws_ecs_service" "main" {
   name = var.service_name
-  task_definition = aws_ecs_task_definition.this
+  task_definition = aws_ecs_task_definition.this.arn
   cluster = data.aws_ecs_cluster.this.id
   desired_count = var.service_desired_count
 }
