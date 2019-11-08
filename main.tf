@@ -206,7 +206,7 @@ resource "aws_lb_listener" "https_alb_listener" {
 
 resource "aws_lb_target_group" "https_target_group" {
   name = "${var.service_name}-ecs-tg"
-  port = lookup(var.port_mappings[0], "containerPort")
+  port = lookup(var.port_mappings[0], "hostPort")
   protocol = "HTTP"
   vpc_id = data.aws_vpc.this.id
 
@@ -215,7 +215,7 @@ resource "aws_lb_target_group" "https_target_group" {
     path = var.health_check_path
     timeout = 5
     healthy_threshold = 2
-    port = lookup(var.port_mappings[0], "containerPort")
+    port = lookup(var.port_mappings[0], "hostPort")
   }
 }
 
