@@ -13,7 +13,7 @@ variable "image_name" {
   type = string
 }
 
-variable "container_port_mappings" {
+variable "port_mappings" {
   type = list(object({
     hostPort      = number
     containerPort = number
