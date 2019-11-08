@@ -36,6 +36,10 @@ resource "aws_ecs_task_definition" "this" {
       environment  = var.env_variables
     }
   ])
+  dynamic "volume" {
+    for_each = ""
+    content {}
+  }
 }
 
 resource "aws_ecs_service" "main" {
@@ -82,7 +86,31 @@ data "aws_iam_policy_document" "role_policy" {
       "elasticloadbalancing:Describe*",
       "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
       "elasticloadbalancing:RegisterTargets",
+    ]
+    resources = ["*"]
+  }
+   statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeInstances",
+      "ec2:TerminateInstances",
+      "ec2:RequestSpotInstances",
+      "ec2:DeleteTags",
+      "ec2:CreateTags",
+      "ec2:DescribeRegions",
+      "ec2:RunInstances",
+      "ec2:DescribeSpotIstanceRequests",
+      "ec2:StopInstances",
+      "ec2:DescribeSecurityGroups",
+      "ec2:GetConsoleOutput",
+      "ec2:DescribeSpotPriceHistory",
+      "ec2:DescribeImages",
+      "ec2:CancelSpotInstanceRequests",
       "iam:PassRole",
+      "ec2:StartInstances",
+      "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeKeyPairs",
     ]
     resources = ["*"]
   }
@@ -97,6 +125,7 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
       type        = "Service"
       identifiers = [
         "ecs-tasks.amazonaws.com",
+         "ec2.amazonaws.com",
         "ecs.amazonaws.com"
       ]
     }
