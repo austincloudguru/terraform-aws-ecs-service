@@ -81,7 +81,7 @@ variable "health_check_path" {
   default = "/"
 }
 
-ariable "volumes" {
+variable "volumes" {
   description = "Task volume definitions as list of configuration objects"
   type = list(object({
     host_path = string
