@@ -148,7 +148,7 @@ resource "aws_lb_target_group" "https_target_group" {
   name = "${var.service_name}-ecs-tg"
   port = lookup(var.port_mappings[0], "hostPort")
   protocol = "HTTP"
-  vpc_id = data.aws_vpc
+  vpc_id = data.aws_vpc.this.id
 
   health_check {
     interval = 60
