@@ -47,7 +47,7 @@ resource "aws_ecs_service" "main" {
   load_balancer {
     target_group_arn = aws_lb_target_group.https_target_group.arn
     container_name = var.service_name
-    container_port = lookup(var.port_mappings[0], "hostPort")
+    container_port = lookup(var.port_mappings[0], "containerPort")
   }
 }
 
@@ -160,7 +160,7 @@ resource "aws_lb_target_group" "https_target_group" {
     path = var.health_check_path
     timeout = 5
     healthy_threshold = 2
-    port = lookup(var.port_mappings[0], "hostPort")
+    port = lookup(var.port_mappings[0], "containerPort")
   }
 }
 
