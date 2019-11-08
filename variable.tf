@@ -27,13 +27,13 @@ variable "port_mappings" {
 
 variable "mount_points" {
   description = "Mount points for the container"
-  type = list(string)
+  type = list
   default = []
 }
 
 variable "env_variables" {
   description = "Environmental Variables to pass to the container"
-  type = list(string)
+  type = list
   default = []
 }
 

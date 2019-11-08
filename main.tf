@@ -20,7 +20,7 @@ data "template_file" "task_definition" {
   ]
 
   EOF
-  vars {
+  vars = {
     service_name = var.service_name
     image_name = var.image_name
     port_mappings = var.port_mappings
