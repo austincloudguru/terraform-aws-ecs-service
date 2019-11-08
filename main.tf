@@ -43,9 +43,9 @@ EOF
 //  }
 }
 
-data "template_file" "task_template" {
-  template = file("templates/service.json.tmpl")
-}
+//data "template_file" "task_template" {
+//  template = file("templates/service.json.tmpl")
+//}
 
 data "aws_caller_identity" "current" {}
 
