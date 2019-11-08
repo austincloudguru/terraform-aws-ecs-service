@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "this" {
     }
   ])
   dynamic "volume" {
-    for_each = ""
+    for_each = var.task_volumes
     content {}
   }
 }
