@@ -151,7 +151,7 @@ resource "aws_lb_listener" "https_alb_listener" {
 
 resource "aws_lb_target_group" "https_target_group" {
   name = "${var.service_name}-ecs-tg"
-  port = lookup(var.port_mappings[0], "hostPort")
+  port = lookup(var.port_mappings[0], "containerPort")
   protocol = "HTTP"
   vpc_id = data.aws_vpc.this.id
 
