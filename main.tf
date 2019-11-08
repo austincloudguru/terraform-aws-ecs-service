@@ -10,12 +10,12 @@ data "template_file" "task_definition" {
   template = <<EOF
   [
     {
-      "name": "${service_name}",
-      "image": "${image_name}",
+      "name": "$${service_name}",
+      "image": "$${image_name}",
       "essential": true,
-      "portMappings": "${port_mappings}",
-      "mountPoints": "${mount_points}",
-      "environment": "${env_variables}"
+      "portMappings": "$${port_mappings}",
+      "mountPoints": "$${mount_points}",
+      "environment": "$${env_variables}"
     }
   ]
 
