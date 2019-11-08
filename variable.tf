@@ -50,12 +50,12 @@ variable "service_desired_count" {
 
 variable "service_cpu" {
   description = "CPU Units to Allocation"
-  type        = string
+  type        = number
   default     = 128
 }
 
 variable "service_memory" {
   description = "Memory to Allocate"
-  type        = string
+  type        = number
   default     = 1024
 }
