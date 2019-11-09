@@ -137,18 +137,18 @@ resource "aws_iam_role" "instance_role" {
   name = "${var.service_name}-task"
   path = "/"
   assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
-}
-
-resource "aws_iam_role_policy" "instance_role_policy" {
-  name = "${var.service_name}-task"
-  role = aws_iam_role.instance_role.id
-  policy = data.aws_iam_policy_document.role_policy.json
   tags = merge(
     {
       "Name" = "${var.ecs_cluster_name}-task"
     },
     var.tags
   )
+}
+
+resource "aws_iam_role_policy" "instance_role_policy" {
+  name = "${var.service_name}-task"
+  role = aws_iam_role.instance_role.id
+  policy = data.aws_iam_policy_document.role_policy.json
 }
 
 data "aws_iam_policy_document" "role_policy" {
