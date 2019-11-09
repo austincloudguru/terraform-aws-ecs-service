@@ -63,6 +63,7 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "main" {
+  depends_on = [aws_lb_target_group.https_target_group]
   name = var.service_name
   task_definition = aws_ecs_task_definition.this.arn
   cluster = data.aws_ecs_cluster.this.id
