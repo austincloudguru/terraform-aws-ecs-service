@@ -73,12 +73,6 @@ resource "aws_ecs_service" "main" {
     container_name = var.service_name
     container_port = lookup(var.port_mappings[0], "containerPort")
   }
-   tags = merge(
-    {
-      "Name" = "${var.service_name}"
-    },
-    var.tags
-  )
 }
 
 #------------------------------------------------------------------------------
