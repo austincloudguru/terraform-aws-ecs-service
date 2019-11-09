@@ -143,7 +143,7 @@ resource "aws_iam_role_policy" "instance_role_policy" {
   name = "${var.service_name}-task"
   role = aws_iam_role.instance_role.id
   policy = data.aws_iam_policy_document.role_policy.json
-   tags = merge(
+  tags = merge(
     {
       "Name" = "${var.ecs_cluster_name}-task"
     },
