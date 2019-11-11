@@ -70,7 +70,7 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "main" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   depends_on      = [aws_lb_target_group.https_target_group]
   name            = var.service_name
   task_definition = aws_ecs_task_definition.this.arn
@@ -85,7 +85,7 @@ resource "aws_ecs_service" "main" {
 }
 
 resource "aws_ecs_service" "main-no-lb" {
-  count = var.lb_name ? 0 : 1
+  count = length(var.lb_name) > 0 ? 0 : 1
   depends_on      = [aws_lb_target_group.https_target_group]
   name            = var.service_name
   task_definition = aws_ecs_task_definition.this.arn
@@ -201,13 +201,13 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
 #     app_name      Application Name for the Certificate
 #------------------------------------------------------------------------------
 resource "aws_acm_certificate" "acm_cert" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   domain_name       = "${var.service_name}.${var.tld}"
   validation_method = "DNS"
 }
 
 resource "aws_route53_record" "cert_validation_record" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   name    = aws_acm_certificate.acm_cert[0].domain_validation_options.0.resource_record_name
   type    = aws_acm_certificate.acm_cert[0].domain_validation_options.0.resource_record_type
   zone_id = data.aws_route53_zone.external[0].zone_id
@@ -216,7 +216,7 @@ resource "aws_route53_record" "cert_validation_record" {
 }
 
 resource "aws_acm_certificate_validation" "default" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   certificate_arn         = aws_acm_certificate.acm_cert[0].arn
   validation_record_fqdns = [aws_route53_record.cert_validation_record[0].fqdn]
 }
@@ -229,7 +229,7 @@ resource "aws_acm_certificate_validation" "default" {
 #     app_port      Port the Application LB Listens on
 #------------------------------------------------------------------------------
 resource "aws_lb_listener" "https_alb_listener" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   load_balancer_arn = data.aws_lb.this[0].arn
   port              = 443
   protocol          = "HTTPS"
@@ -242,7 +242,7 @@ resource "aws_lb_listener" "https_alb_listener" {
 }
 
 resource "aws_lb_target_group" "https_target_group" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   name     = "${var.service_name}-ecs-tg"
   port     = lookup(var.port_mappings[0], "hostPort")
   protocol = "HTTP"
@@ -264,7 +264,7 @@ resource "aws_lb_target_group" "https_target_group" {
 }
 
 resource "aws_lb_listener_rule" "https_alb_listener_rule" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   listener_arn = aws_lb_listener.https_alb_listener[0].arn
   priority     = 1
   action {
@@ -284,7 +284,7 @@ resource "aws_lb_listener_rule" "https_alb_listener_rule" {
 #     app_name      Application Name for the Certificate
 #------------------------------------------------------------------------------
 resource "aws_route53_record" "alb_dns" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   name    = var.service_name
   type    = "A"
   zone_id = data.aws_route53_zone.external[0].zone_id
