@@ -8,12 +8,14 @@ data "aws_ecs_cluster" "this" {
 data "aws_caller_identity" "current" {}
 
 data "aws_lb" "this" {
+  count = var.lb_name ? 1 : 0
   name = var.lb_name
 }
 
 data "aws_vpc" "this" {
+  count = var.lb_name ? 1 : 0
   filter {
-    name = "tag:Name"
+    name   = "tag:Name"
     values = [var.vpc_name]
   }
 }
@@ -22,7 +24,7 @@ data "aws_vpc" "this" {
 # Launch Docker Service
 #------------------------------------------------------------------------------
 resource "aws_ecs_task_definition" "this" {
-  family = var.service_name
+  family             = var.service_name
   execution_role_arn = aws_iam_role.ecs_exec_role.arn
   container_definitions = jsonencode([
     {
@@ -39,7 +41,7 @@ resource "aws_ecs_task_definition" "this" {
   dynamic "volume" {
     for_each = var.volumes
     content {
-      name = volume.value.name
+      name      = volume.value.name
       host_path = lookup(volume.value, "host_path", null)
 
       dynamic "docker_volume_configuration" {
@@ -54,7 +56,7 @@ resource "aws_ecs_task_definition" "this" {
       }
     }
   }
-   tags = merge(
+  tags = merge(
     {
       "Name" = "${var.service_name}-td"
     },
@@ -63,16 +65,16 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "main" {
-  depends_on = [aws_lb_target_group.https_target_group]
-  name = var.service_name
+  depends_on      = [aws_lb_target_group.https_target_group]
+  name            = var.service_name
   task_definition = aws_ecs_task_definition.this.arn
-  cluster = data.aws_ecs_cluster.this.id
-  desired_count = var.service_desired_count
-  iam_role = aws_iam_role.instance_role.arn
+  cluster         = data.aws_ecs_cluster.this.id
+  desired_count   = var.service_desired_count
+  iam_role        = aws_iam_role.instance_role.arn
   load_balancer {
     target_group_arn = aws_lb_target_group.https_target_group.arn
-    container_name = var.service_name
-    container_port = lookup(var.port_mappings[0], "containerPort")
+    container_name   = var.service_name
+    container_port   = lookup(var.port_mappings[0], "containerPort")
   }
 }
 
@@ -80,10 +82,10 @@ resource "aws_ecs_service" "main" {
 # Create the executor role
 #------------------------------------------------------------------------------
 resource "aws_iam_role" "ecs_exec_role" {
-  name = "${var.service_name}-exec"
-  path = "/"
+  name               = "${var.service_name}-exec"
+  path               = "/"
   assume_role_policy = data.aws_iam_policy_document.ecs_exec_assume_role_policy.json
-   tags = merge(
+  tags = merge(
     {
       "Name" = "${var.service_name}-exec"
     },
@@ -92,8 +94,8 @@ resource "aws_iam_role" "ecs_exec_role" {
 }
 
 resource "aws_iam_role_policy" "ecs_exec_role_policy" {
-  name = "${var.service_name}-exec"
-  role = aws_iam_role.ecs_exec_role.id
+  name   = "${var.service_name}-exec"
+  role   = aws_iam_role.ecs_exec_role.id
   policy = data.aws_iam_policy_document.ecs_exec_policy.json
 }
 
@@ -117,7 +119,7 @@ data "aws_iam_policy_document" "ecs_exec_assume_role_policy" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type        = "Service"
+      type = "Service"
       identifiers = [
         "ecs-tasks.amazonaws.com"
       ]
@@ -129,8 +131,8 @@ data "aws_iam_policy_document" "ecs_exec_assume_role_policy" {
 # Create the task profile
 #------------------------------------------------------------------------------
 resource "aws_iam_role" "instance_role" {
-  name = "${var.service_name}-task"
-  path = "/"
+  name               = "${var.service_name}-task"
+  path               = "/"
   assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
   tags = merge(
     {
@@ -141,8 +143,8 @@ resource "aws_iam_role" "instance_role" {
 }
 
 resource "aws_iam_role_policy" "instance_role_policy" {
-  name = "${var.service_name}-task"
-  role = aws_iam_role.instance_role.id
+  name   = "${var.service_name}-task"
+  role   = aws_iam_role.instance_role.id
   policy = data.aws_iam_policy_document.role_policy.json
 }
 
@@ -167,7 +169,7 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type        = "Service"
+      type = "Service"
       identifiers = [
         "ecs-tasks.amazonaws.com",
         "ecs.amazonaws.com"
@@ -183,24 +185,28 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
 #     app_name      Application Name for the Certificate
 #------------------------------------------------------------------------------
 data "aws_route53_zone" "external" {
+  count = var.lb_name ? 1 : 0
   name = "${var.tld}."
 }
 
 resource "aws_acm_certificate" "acm_cert" {
-  domain_name = "${var.service_name}.${var.tld}"
+  count = var.lb_name ? 1 : 0
+  domain_name       = "${var.service_name}.${var.tld}"
   validation_method = "DNS"
 }
 
 resource "aws_route53_record" "cert_validation_record" {
-  name = aws_acm_certificate.acm_cert.domain_validation_options.0.resource_record_name
-  type = aws_acm_certificate.acm_cert.domain_validation_options.0.resource_record_type
+  count = var.lb_name ? 1 : 0
+  name    = aws_acm_certificate.acm_cert.domain_validation_options.0.resource_record_name
+  type    = aws_acm_certificate.acm_cert.domain_validation_options.0.resource_record_type
   zone_id = data.aws_route53_zone.external.zone_id
   records = [aws_acm_certificate.acm_cert.domain_validation_options.0.resource_record_value]
-  ttl = 60
+  ttl     = 60
 }
 
 resource "aws_acm_certificate_validation" "default" {
-  certificate_arn = aws_acm_certificate.acm_cert.arn
+  count = var.lb_name ? 1 : 0
+  certificate_arn         = aws_acm_certificate.acm_cert.arn
   validation_record_fqdns = [aws_route53_record.cert_validation_record.fqdn]
 }
 
@@ -212,31 +218,33 @@ resource "aws_acm_certificate_validation" "default" {
 #     app_port      Port the Application LB Listens on
 #------------------------------------------------------------------------------
 resource "aws_lb_listener" "https_alb_listener" {
-  load_balancer_arn = data.aws_lb.this.arn
-  port = 443
-  protocol = "HTTPS"
-  ssl_policy = "ELBSecurityPolicy-2016-08"
-  certificate_arn = aws_acm_certificate.acm_cert.arn
+  count = var.lb_name ? 1 : 0
+  load_balancer_arn = data.aws_lb.this[0].arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate.acm_cert.arn
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.https_target_group.arn
   }
 }
 
 resource "aws_lb_target_group" "https_target_group" {
-  name = "${var.service_name}-ecs-tg"
-  port = lookup(var.port_mappings[0], "hostPort")
+  count = var.lb_name ? 1 : 0
+  name     = "${var.service_name}-ecs-tg"
+  port     = lookup(var.port_mappings[0], "hostPort")
   protocol = "HTTP"
-  vpc_id = data.aws_vpc.this.id
+  vpc_id   = data.aws_vpc.this[0].id
 
   health_check {
-    interval = 60
-    path = var.health_check_path
-    timeout = 5
+    interval          = 60
+    path              = var.health_check_path
+    timeout           = 5
     healthy_threshold = 2
-    port = lookup(var.port_mappings[0], "hostPort")
+    port              = lookup(var.port_mappings[0], "hostPort")
   }
-   tags = merge(
+  tags = merge(
     {
       "Name" = "${var.service_name}-ecs-tg"
     },
@@ -245,16 +253,17 @@ resource "aws_lb_target_group" "https_target_group" {
 }
 
 resource "aws_lb_listener_rule" "https_alb_listener_rule" {
+  count = var.lb_name ? 1 : 0
   listener_arn = aws_lb_listener.https_alb_listener.arn
-  priority = 1
+  priority     = 1
   action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.https_target_group.arn
   }
   condition {
     field = "host-header"
     values = [
-      aws_route53_record.alb_dns.fqdn]
+    aws_route53_record.alb_dns.fqdn]
   }
 }
 
@@ -264,12 +273,13 @@ resource "aws_lb_listener_rule" "https_alb_listener_rule" {
 #     app_name      Application Name for the Certificate
 #------------------------------------------------------------------------------
 resource "aws_route53_record" "alb_dns" {
+  count = var.lb_name ? 1 : 0
   name    = var.service_name
   type    = "A"
   zone_id = data.aws_route53_zone.external.zone_id
   alias {
     evaluate_target_health = false
-    name                   = data.aws_lb.this.dns_name
-    zone_id                = data.aws_lb.this.zone_id
+    name                   = data.aws_lb.this[0].dns_name
+    zone_id                = data.aws_lb.this[0].zone_id
   }
 }
