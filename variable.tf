@@ -101,3 +101,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "create_listener" {
+  description = "Create the https listener"
+  type        = bool
+  default     = false
+}

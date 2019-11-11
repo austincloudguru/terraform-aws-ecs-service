@@ -229,7 +229,7 @@ resource "aws_acm_certificate_validation" "default" {
 #     app_port      Port the Application LB Listens on
 #------------------------------------------------------------------------------
 resource "aws_lb_listener" "https_alb_listener" {
-  count = length(var.lb_name) > 0 ? 1 : 0
+  count = length(var.lb_name) > 0 && var.create_listener ? 1 : 0
   load_balancer_arn = data.aws_lb.this[0].arn
   port              = 443
   protocol          = "HTTPS"
