@@ -1,16 +1,16 @@
 variable "ecs_cluster_name" {
   description = "Name of the ECS cluster"
-  type = string
+  type        = string
 }
 
 variable "service_name" {
   description = "Name of the service being deployed"
-  type = string
+  type        = string
 }
 
 variable "image_name" {
   description = "Name of the image to be deployed"
-  type = string
+  type        = string
 }
 
 variable "port_mappings" {
@@ -28,18 +28,20 @@ variable "port_mappings" {
 
 variable "mount_points" {
   description = "Mount points for the container"
-  type = list
-  default = []
+  type        = list
+  default     = []
 }
 
 variable "env_variables" {
   description = "Environmental Variables to pass to the container"
-  type = list
-  default = []
+  type        = list
+  default     = []
 }
 
 variable "service_desired_count" {
   description = "Desired Number of Instances to run"
+  type        = number
+  default     = 1
 }
 
 variable "service_cpu" {
@@ -56,23 +58,26 @@ variable "service_memory" {
 
 variable "lb_name" {
   description = "Name of the ALB to use"
-  type = string
+  type        = string
+  default     = ""
 }
 
 variable "vpc_name" {
   description = "Name of the VPC to work in"
   type        = string
+  default     = ""
 }
 
 variable "tld" {
   description = "Top Level Domain to use"
   type        = string
+  default     = ""
 }
 
 variable "health_check_path" {
   description = "Health Check Path"
-  type = string
-  default = "/"
+  type        = string
+  default     = "/"
 }
 
 variable "volumes" {
@@ -88,7 +93,7 @@ variable "volumes" {
       scope         = string
     }))
   }))
-  default     = []
+  default = []
 }
 
 variable "tags" {
