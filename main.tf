@@ -287,7 +287,7 @@ resource "aws_route53_record" "alb_dns" {
   count = var.lb_name ? 1 : 0
   name    = var.service_name
   type    = "A"
-  zone_id = data.aws_route53_zone.external.zone_id
+  zone_id = data.aws_route53_zone.external[0].zone_id
   alias {
     evaluate_target_health = false
     name                   = data.aws_lb.this[0].dns_name
