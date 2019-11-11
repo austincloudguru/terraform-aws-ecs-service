@@ -8,16 +8,21 @@ data "aws_ecs_cluster" "this" {
 data "aws_caller_identity" "current" {}
 
 data "aws_lb" "this" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   name = var.lb_name
 }
 
 data "aws_vpc" "this" {
-  count = var.lb_name ? 1 : 0
+  count = length(var.lb_name) > 0 ? 1 : 0
   filter {
     name   = "tag:Name"
     values = [var.vpc_name]
   }
+}
+
+data "aws_route53_zone" "external" {
+  count = length(var.lb_name) > 0 ? 1 : 0
+  name = "${var.tld}."
 }
 
 #------------------------------------------------------------------------------
@@ -195,11 +200,6 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
 #     tld           Top Level Domain
 #     app_name      Application Name for the Certificate
 #------------------------------------------------------------------------------
-data "aws_route53_zone" "external" {
-  count = var.lb_name ? 1 : 0
-  name = "${var.tld}."
-}
-
 resource "aws_acm_certificate" "acm_cert" {
   count = var.lb_name ? 1 : 0
   domain_name       = "${var.service_name}.${var.tld}"
