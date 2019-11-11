@@ -65,6 +65,7 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "main" {
+  count = var.lb_name ? 1 : 0
   depends_on      = [aws_lb_target_group.https_target_group]
   name            = var.service_name
   task_definition = aws_ecs_task_definition.this.arn
@@ -72,10 +73,20 @@ resource "aws_ecs_service" "main" {
   desired_count   = var.service_desired_count
   iam_role        = aws_iam_role.instance_role.arn
   load_balancer {
-    target_group_arn = aws_lb_target_group.https_target_group.arn
+    target_group_arn = aws_lb_target_group.https_target_group[0].arn
     container_name   = var.service_name
     container_port   = lookup(var.port_mappings[0], "containerPort")
   }
+}
+
+resource "aws_ecs_service" "main-no-lb" {
+  count = var.lb_name ? 0 : 1
+  depends_on      = [aws_lb_target_group.https_target_group]
+  name            = var.service_name
+  task_definition = aws_ecs_task_definition.this.arn
+  cluster         = data.aws_ecs_cluster.this.id
+  desired_count   = var.service_desired_count
+  iam_role        = aws_iam_role.instance_role.arn
 }
 
 #------------------------------------------------------------------------------
@@ -197,17 +208,17 @@ resource "aws_acm_certificate" "acm_cert" {
 
 resource "aws_route53_record" "cert_validation_record" {
   count = var.lb_name ? 1 : 0
-  name    = aws_acm_certificate.acm_cert.domain_validation_options.0.resource_record_name
-  type    = aws_acm_certificate.acm_cert.domain_validation_options.0.resource_record_type
-  zone_id = data.aws_route53_zone.external.zone_id
-  records = [aws_acm_certificate.acm_cert.domain_validation_options.0.resource_record_value]
+  name    = aws_acm_certificate.acm_cert[0].domain_validation_options.0.resource_record_name
+  type    = aws_acm_certificate.acm_cert[0].domain_validation_options.0.resource_record_type
+  zone_id = data.aws_route53_zone.external[0].zone_id
+  records = [aws_acm_certificate.acm_cert[0].domain_validation_options.0.resource_record_value]
   ttl     = 60
 }
 
 resource "aws_acm_certificate_validation" "default" {
   count = var.lb_name ? 1 : 0
-  certificate_arn         = aws_acm_certificate.acm_cert.arn
-  validation_record_fqdns = [aws_route53_record.cert_validation_record.fqdn]
+  certificate_arn         = aws_acm_certificate.acm_cert[0].arn
+  validation_record_fqdns = [aws_route53_record.cert_validation_record[0].fqdn]
 }
 
 #------------------------------------------------------------------------------
@@ -223,10 +234,10 @@ resource "aws_lb_listener" "https_alb_listener" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_acm_certificate.acm_cert.arn
+  certificate_arn   = aws_acm_certificate.acm_cert[0].arn
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.https_target_group.arn
+    target_group_arn = aws_lb_target_group.https_target_group[0].arn
   }
 }
 
@@ -254,16 +265,16 @@ resource "aws_lb_target_group" "https_target_group" {
 
 resource "aws_lb_listener_rule" "https_alb_listener_rule" {
   count = var.lb_name ? 1 : 0
-  listener_arn = aws_lb_listener.https_alb_listener.arn
+  listener_arn = aws_lb_listener.https_alb_listener[0].arn
   priority     = 1
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.https_target_group.arn
+    target_group_arn = aws_lb_target_group.https_target_group[0].arn
   }
   condition {
     field = "host-header"
     values = [
-    aws_route53_record.alb_dns.fqdn]
+    aws_route53_record.alb_dns[0].fqdn]
   }
 }
 
