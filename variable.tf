@@ -117,3 +117,9 @@ variable "task_iam_policies" {
   }))
   default = []
 }
+
+variable "network_mode" {
+  description = "The Network Mode to run the container at"
+  type = string
+  default = "bridge"
+}
