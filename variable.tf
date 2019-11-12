@@ -107,3 +107,13 @@ variable "create_listener" {
   type        = bool
   default     = false
 }
+
+variable "task_iam_policies" {
+  description = "Additional IAM policies for the task"
+  type = list(object({
+    effect = string
+    actions = list(string)
+    resources = list(string)
+  }))
+  default = []
+}

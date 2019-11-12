@@ -178,6 +178,14 @@ data "aws_iam_policy_document" "role_policy" {
     ]
     resources = ["*"]
   }
+  dynamic "statement" {
+    for_each = var.task_iam_policies
+    content {
+      effect = lookup(task_iam_policies.value, "effect", null)
+      actions = lookup(task_iam_policies.value, "actions", null)
+      resources = lookup(task_iam_policies.value, "resources", null)
+    }
+  }
 }
 
 data "aws_iam_policy_document" "instance_assume_role_policy" {
