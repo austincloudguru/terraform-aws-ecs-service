@@ -181,9 +181,9 @@ data "aws_iam_policy_document" "role_policy" {
   dynamic "statement" {
     for_each = var.task_iam_policies
     content {
-      effect = lookup(task_iam_policies.value, "effect", null)
-      actions = lookup(task_iam_policies.value, "actions", null)
-      resources = lookup(task_iam_policies.value, "resources", null)
+      effect = lookup(statement.value, "effect", null)
+      actions = lookup(statement.value, "actions", null)
+      resources = lookup(statement.value, "resources", null)
     }
   }
 }
