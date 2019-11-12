@@ -21,6 +21,7 @@ service_desired_count | Desired number of instances to run | number | 1 | no |
 | volumes | Task Volume definitionats as a list of configuration objects | list(object) | [] | no|
 | tags | A map of tags to add to all resources | map(string) | {} | no |
 |create_listener | Create the alb listener (only needed once per port) | bool | false | no |
+| task_iam_policy | Additional task policies to be applied | list(object) | [] | no |
 
 ## Outputs
 
