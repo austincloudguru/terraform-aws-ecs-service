@@ -12,6 +12,12 @@ data "aws_lb" "this" {
   name = var.lb_name
 }
 
+data "aws_lb_listener" "this" {
+  count = length(var.lb_name) > 0 && var.create_listener ? 0 : 1
+  load_balancer_arn = data.aws_lb.this.arn
+  port              = 443
+}
+
 data "aws_vpc" "this" {
   count = length(var.lb_name) > 0 ? 1 : 0
   filter {
@@ -276,8 +282,23 @@ resource "aws_lb_target_group" "https_target_group" {
 }
 
 resource "aws_lb_listener_rule" "https_alb_listener_rule" {
-  count = length(var.lb_name) > 0 ? 1 : 0
+  count = length(var.lb_name) > 0 && var.create_listener ? 1 : 0
   listener_arn = aws_lb_listener.https_alb_listener[0].arn
+  priority     = 1
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.https_target_group[0].arn
+  }
+  condition {
+    field = "host-header"
+    values = [
+    aws_route53_record.alb_dns[0].fqdn]
+  }
+}
+
+resource "aws_lb_listener_rule" "https_alb_listener_rule_no_listener" {
+  count = length(var.lb_name) > 0 && var.create_listener ? 0 : 1
+  listener_arn = data.aws_lb_listener.this.arn
   priority     = 1
   action {
     type             = "forward"
