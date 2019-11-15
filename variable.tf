@@ -151,7 +151,7 @@ variable "linux_parameters" {
   description = "Additional Linux Parameters"
   type = list(object({
     capabilities = list(object({
-      add = string
+      add = list(string)
     }))
   }))
   default = null
