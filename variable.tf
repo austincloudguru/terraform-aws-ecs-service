@@ -32,7 +32,7 @@ variable "linux_parameters" {
     capabilities = list(object({
       add = string
     }))
-  }))k
+  }))
   default = []
 }
 
