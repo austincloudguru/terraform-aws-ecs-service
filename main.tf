@@ -49,7 +49,7 @@ resource "aws_ecs_task_definition" "this" {
       command      = var.command
       portMappings = var.port_mappings
       mountPoints  = var.mount_points
-      environment  = var.env_variables
+      environment  = var.environment
       linuxParameters = var.linux_parameters
     }
   ])

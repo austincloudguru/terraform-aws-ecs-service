@@ -138,10 +138,13 @@ variable "mount_points" {
   default     = []
 }
 
-variable "env_variables" {
+variable "environment" {
   description = "Environmental Variables to pass to the container"
-  type        = list(object({}))
-  default     = []
+  type        = list(object({
+    name  = string
+    value = string
+  }))
+  default     = null
 }
 
 variable "linux_parameters" {
