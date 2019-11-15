@@ -298,7 +298,7 @@ resource "aws_lb_listener_rule" "https_alb_listener_rule" {
 
 resource "aws_lb_listener_rule" "https_alb_listener_rule_no_listener" {
   count = length(var.lb_name) > 0 && var.create_listener ? 0 : 1
-  listener_arn = data.aws_lb_listener.this.arn
+  listener_arn = data.aws_lb_listener.this[0].arn
   priority     = 1
   action {
     type             = "forward"
