@@ -126,8 +126,8 @@ variable "port_mappings" {
     protocol      = string
   }))
   default = [{
-    hostPort      = 12345
-    containerPort = 12345
+    hostPort      = 80
+    containerPort = 80
     protocol      = "tcp"
   }]
 }
@@ -152,6 +152,7 @@ variable "linux_parameters" {
   type = object({
     capabilities = object({
       add = list(string)
+      drop = list(string)
     })
   })
   default = null
