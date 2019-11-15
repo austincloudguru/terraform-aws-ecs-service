@@ -25,6 +25,7 @@ variable "port_mappings" {
     protocol      = "tcp"
   }]
 }
+
 variable "linux_parameters" {
   description = "Additional Linux Parameters"
   type = list(object({
@@ -34,6 +35,7 @@ variable "linux_parameters" {
   }))k
   default = []
 }
+
 variable "mount_points" {
   description = "Mount points for the container"
   type        = list
