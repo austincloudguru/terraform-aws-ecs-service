@@ -42,6 +42,7 @@ resource "aws_ecs_task_definition" "this" {
       portMappings = var.port_mappings
       mountPoints  = var.mount_points
       environment  = var.env_variables
+      linuxParameters = var.linux_parameters
     }
   ])
   dynamic "volume" {

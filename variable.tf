@@ -25,7 +25,11 @@ variable "port_mappings" {
     protocol      = "tcp"
   }]
 }
-
+variable "linux_parameters" {
+  description = "Additional Linux Parameters"
+  type = list
+  default = []
+}
 variable "mount_points" {
   description = "Mount points for the container"
   type        = list
