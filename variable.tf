@@ -28,12 +28,8 @@ variable "port_mappings" {
 
 variable "linux_parameters" {
   description = "Additional Linux Parameters"
-  type = list(object({
-    capabilities = list(object({
-      add = string
-    }))
-  }))
-  default = []
+  type = object({})
+  default = {}
 }
 
 variable "mount_points" {
