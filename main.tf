@@ -34,11 +34,13 @@ resource "aws_ecs_task_definition" "this" {
   network_mode = var.network_mode
   container_definitions = jsonencode([
     {
-      cpu          = var.service_cpu
-      essential    = true
-      image        = var.image_name
-      memory       = var.service_memory
       name         = var.service_name
+      image        = var.image_name
+      cpu          = var.service_cpu
+      memory       = var.service_memory
+      essential    = var.essential
+      privileged   = var.privileged
+      command      = var.command
       portMappings = var.port_mappings
       mountPoints  = var.mount_points
       environment  = var.env_variables
