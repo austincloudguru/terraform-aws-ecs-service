@@ -149,6 +149,10 @@ variable "environment" {
 
 variable "linux_parameters" {
   description = "Additional Linux Parameters"
-  type = object({})
-  default = {}
+  type = list(object({
+    capabilities = list(object({
+      add = string
+    }))
+  }))
+  default = null
 }
