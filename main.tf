@@ -14,7 +14,7 @@ data "aws_lb" "this" {
 
 data "aws_lb_listener" "this" {
   count = length(var.lb_name) > 0 && var.create_listener ? 0 : 1
-  load_balancer_arn = data.aws_lb.this.arn
+  load_balancer_arn = data.aws_lb.this[0].arn
   port              = 443
 }
 
