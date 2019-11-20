@@ -85,7 +85,11 @@ variable "port_mappings" {
 
 variable "mount_points" {
   description = "Mount points for the container"
-  type        = list(object({}))
+  type        = list(object({
+    containerPath = string
+    sourceVolume = string
+    readOnly = bool
+  }))
   default     = []
 }
 
