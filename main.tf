@@ -176,5 +176,4 @@ resource "aws_ecs_service" "main-no-lb" {
   task_definition = aws_ecs_task_definition.this.arn
   cluster         = var.ecs_cluster_id
   desired_count   = var.service_desired_count
-  iam_role        = aws_iam_role.instance_role.arn
 }
