@@ -80,11 +80,7 @@ variable "port_mappings" {
     containerPort = number
     protocol      = string
   }))
-  default = [{
-    hostPort      = 80
-    containerPort = 80
-    protocol      = "tcp"
-  }]
+  default = []
 }
 
 variable "mount_points" {
