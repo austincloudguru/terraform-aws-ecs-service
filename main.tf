@@ -66,7 +66,7 @@ resource "aws_iam_role" "instance_role" {
 resource "aws_iam_role_policy" "instance_role_policy" {
   count = length(var.target_group_arn) > 0 ? 0 : 1
   name   = "${var.service_name}-task"
-  role   = aws_iam_role.instance_role.id
+  role   = aws_iam_role.instance_role[0].id
   policy = data.aws_iam_policy_document.role_policy[0].json
 }
 
