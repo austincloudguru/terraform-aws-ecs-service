@@ -160,3 +160,9 @@ variable "log_configuration" {
   })
   default     = null
 }
+
+variable "target_group_arn" {
+  description = "The ARN of the Load Balancer target group to associate with the service."
+  type = string
+  default = null
+}
