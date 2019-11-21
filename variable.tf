@@ -161,6 +161,12 @@ variable "log_configuration" {
   default     = null
 }
 
+variable "deploy_with_tg" {
+  description = "Deploy the service group attached to a target group"
+  type = bool
+  default = false
+}
+
 variable "target_group_arn" {
   description = "The ARN of the Load Balancer target group to associate with the service."
   type = string
