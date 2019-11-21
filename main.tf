@@ -51,9 +51,10 @@ data "aws_iam_policy_document" "ecs_exec_assume_role_policy" {
 # Create the task profile
 #------------------------------------------------------------------------------
 resource "aws_iam_role" "instance_role" {
+  count = length(var.target_group_arn) > 0 ? 0 : 1
   name               = "${var.service_name}-task"
   path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
+  assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy[0].json
   tags = merge(
     {
       "Name" = "${var.service_name}-task"
@@ -63,12 +64,14 @@ resource "aws_iam_role" "instance_role" {
 }
 
 resource "aws_iam_role_policy" "instance_role_policy" {
+  count = length(var.target_group_arn) > 0 ? 0 : 1
   name   = "${var.service_name}-task"
   role   = aws_iam_role.instance_role.id
-  policy = data.aws_iam_policy_document.role_policy.json
+  policy = data.aws_iam_policy_document.role_policy[0].json
 }
 
 data "aws_iam_policy_document" "role_policy" {
+  count = length(var.target_group_arn) > 0 ? 0 : 1
   statement {
     effect = "Allow"
     actions = [
@@ -93,6 +96,7 @@ data "aws_iam_policy_document" "role_policy" {
 }
 
 data "aws_iam_policy_document" "instance_assume_role_policy" {
+  count = length(var.target_group_arn) > 0 ? 0 : 1
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -161,7 +165,7 @@ resource "aws_ecs_service" "main" {
   task_definition = aws_ecs_task_definition.this.arn
   cluster         = var.ecs_cluster_id
   desired_count   = var.service_desired_count
-  iam_role        = aws_iam_role.instance_role.arn
+  iam_role        = aws_iam_role.instance_role[0].arn
   load_balancer {
     target_group_arn = var.target_group_arn
     container_name   = var.service_name
