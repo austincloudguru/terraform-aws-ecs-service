@@ -17,12 +17,6 @@ variable "service_desired_count" {
   default     = 1
 }
 
-variable "lb_name" {
-  description = "Name of the ALB to use"
-  type        = string
-  default     = ""
-}
-
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
@@ -32,8 +26,8 @@ variable "tags" {
 variable "task_iam_policies" {
   description = "Additional IAM policies for the task"
   type = list(object({
-    effect = string
-    actions = list(string)
+    effect    = string
+    actions   = list(string)
     resources = list(string)
   }))
   default = []
@@ -63,7 +57,7 @@ variable "essential" {
 }
 
 variable "privileged" {
-  description = "Whether the task is essential"
+  description = "Whether the task is privileged"
   type        = bool
   default     = false
 }
@@ -75,6 +69,7 @@ variable "command" {
 }
 
 variable "port_mappings" {
+  description = "Port mappings for the docker Container"
   type = list(object({
     hostPort      = number
     containerPort = number
@@ -85,28 +80,28 @@ variable "port_mappings" {
 
 variable "mount_points" {
   description = "Mount points for the container"
-  type        = list(object({
+  type = list(object({
     containerPath = string
-    sourceVolume = string
-    readOnly = bool
+    sourceVolume  = string
+    readOnly      = bool
   }))
-  default     = []
+  default = []
 }
 
 variable "environment" {
   description = "Environmental Variables to pass to the container"
-  type        = list(object({
+  type = list(object({
     name  = string
     value = string
   }))
-  default     = null
+  default = null
 }
 
 variable "linux_parameters" {
   description = "Additional Linux Parameters"
   type = object({
     capabilities = object({
-      add = list(string)
+      add  = list(string)
       drop = list(string)
     })
   })
@@ -115,8 +110,8 @@ variable "linux_parameters" {
 
 variable "network_mode" {
   description = "The Network Mode to run the container at"
-  type = string
-  default = "bridge"
+  type        = string
+  default     = "bridge"
 }
 
 variable "volumes" {
@@ -141,15 +136,8 @@ variable "tld" {
   default     = ""
 }
 
-variable "external_zone_id" {
-  description = "The External Zone ID to use"
-  type        = string
-  default     = ""
-}
-
 variable "log_configuration" {
   description = "Log configuration options to send to a custom log driver for the container."
-
   type = object({
     logDriver = string
     options   = map(string)
@@ -158,17 +146,17 @@ variable "log_configuration" {
       valueFrom = string
     }))
   })
-  default     = null
+  default = null
 }
 
 variable "deploy_with_tg" {
   description = "Deploy the service group attached to a target group"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "target_group_arn" {
   description = "The ARN of the Load Balancer target group to associate with the service."
-  type = string
-  default = null
+  type        = string
+  default     = null
 }
