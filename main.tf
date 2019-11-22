@@ -7,14 +7,14 @@ resource "aws_iam_role" "ecs_exec_role" {
   assume_role_policy = data.aws_iam_policy_document.ecs_exec_assume_role_policy.json
   tags = merge(
     {
-      "Name" = join("", var.service_name, "-exec")
+      "Name" = join("", [var.service_name, "-exec"])
     },
     var.tags
   )
 }
 
 resource "aws_iam_role_policy" "ecs_exec_role_policy" {
-  name   = join("", var.service_name, "-exec")
+  name   = join("", [var.service_name, "-exec"])
   role   = aws_iam_role.ecs_exec_role.id
   policy = data.aws_iam_policy_document.ecs_exec_policy.json
 }
@@ -52,12 +52,12 @@ data "aws_iam_policy_document" "ecs_exec_assume_role_policy" {
 #------------------------------------------------------------------------------
 resource "aws_iam_role" "instance_role" {
   count              = var.deploy_with_tg ? 1 : 0
-  name               = join("", var.service_name, "-task")
+  name               = join("", [var.service_name, "-task"])
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy[0].json
   tags = merge(
     {
-      "Name" = join("", var.service_name, "-task")
+      "Name" = join("", [var.service_name, "-task"])
     },
     var.tags
   )
@@ -65,7 +65,7 @@ resource "aws_iam_role" "instance_role" {
 
 resource "aws_iam_role_policy" "instance_role_policy" {
   count  = var.deploy_with_tg ? 1 : 0
-  name   = join("", var.service_name, "-task")
+  name   = join("", [var.service_name, "-task"])
   role   = aws_iam_role.instance_role[0].id
   policy = data.aws_iam_policy_document.role_policy[0].json
 }
