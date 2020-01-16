@@ -167,11 +167,11 @@ resource "aws_ecs_service" "main" {
   desired_count   = var.service_desired_count
   iam_role        = aws_iam_role.instance_role[0].arn
   dynamic "load_balancer" {
-    for_each = var.target_group_arns
+    for_each = var.port_mappings
     content {
-      target_group_arn = load_balancer.value
+      target_group_arn = lookup(load_balancer.value, "target_group_arn")
       container_name   = var.service_name
-      container_port   = lookup(var.port_mappings[load_balancer.key], "containerPort")
+      container_port   = lookup(load_balancer.value, "containerPort")
     }
   }
 }

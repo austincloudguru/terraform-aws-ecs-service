@@ -4,14 +4,13 @@ Terraform module for creating an ECS service.
 ## Deploying a service with a Load Balancer
 ```hcl
 module "task_with_alb" {
-  source  = "AustinCloudGuru/ecs-service/aws"
-  version = "0.3.0"
-  ecs_cluster_id = arn:aws:ecs:us-east-1:888888888888:cluster/ecs-0
-  image_name = nginx:latest
-  service_name = my-web-server
-  tld = austincloud.guru
+  source  = "lazzurs/ecs-service/aws"
+  version = "0.4.0"
+  ecs_cluster_id = "arn:aws:ecs:us-east-1:888888888888:cluster/ecs-0"
+  image_name = "nginx:latest"
+  service_name = "my-web-server"
+  tld = "austincloud.guru"
   service_memory = 2048
-  target_group_arn = arn:aws:elasticloadbalancing:us-east-2:888888888888:targetgroup/my-web-server/b8fbca622c86d2dd
   mount_points = [
     {
       sourceVolume  = "nginx_content"
@@ -32,6 +31,7 @@ module "task_with_alb" {
       containerPort = 80,
       hostPort = 8080
       protocol = "tcp"
+      target_group_arn = "arn:aws:elasticloadbalancing:us-east-2:888888888888:targetgroup/my-web-server/b8fbca622c86d2dd"
     }
   ]
   deploy_with_tg = true
@@ -42,11 +42,11 @@ module "task_with_alb" {
 ## Deploying a service wihtout a Load Balancer
 ```hcl
 module "task_without_alb" {
-  source  = "AustinCloudGuru/ecs-service/aws"
-  version = "0.3.0"  
+  source  = "lazzurs/ecs-service/aws"
+  version = "0.4.0"  
   ecs_cluster_id                = arn:aws:ecs:us-east-1:888888888888:cluster/ecs-0
-  service_name                  = datadog_agent
-  image_name                    = datadog/agent:latest
+  service_name                  = "datadog_agent"
+  image_name                    = "datadog/agent:latest"
   service_cpu                   = 10
   service_memory                = 256
   essential                     = true
@@ -103,7 +103,7 @@ module "task_without_alb" {
 | ecs_cluster_id | ID of the ECS cluster | string | | yes |
 | service_name | Name of the service being deployed | string | | yes |
 | image_name | Name of the image to be deployed | string | | yes |
-| port_mappings | Port mappings for the docker Container | list(object) | hostPort      = 12345 containerPort = 12345 protocol      = "tcp" | yes |
+| port_mappings | Port mappings for the docker Container | list(object) | hostPort = 12345 containerPort = 12345 protocol = "tcp" target_group_arn = "arn" | no |
 | mount_points | Mount points for the container | list | [] | no |
 | environment | Environmental variables to pass to the container | list | [] | no | 
 | linux_parameters | Additional Linux Parameters | object | null | no |
@@ -123,7 +123,6 @@ module "task_without_alb" {
 | network_mode | The Network Mode to run the container at | string | bridge | no | 
 | log_configuration | Log configuration options to send to a custom log driver for the container | object | null | no |
 | deploy_with_tg | Deploy the service group attached to a target group | bool | false | no |
-| target_group_arns | The ARNs of the Load Balancer target groups to associate with the service | list(string) | null | no |
 
 
 ## Outputs
@@ -131,7 +130,8 @@ module "task_without_alb" {
 None.
 
 ## Authors
-Module is maintained by [Mark Honomichl](https://github.com/austincloudguru).
+Module is forked from a module by [Mark Honomichl](https://github.com/austincloudguru).
+Maintained by Rob Lazzurs
 
 ## License
 MIT Licensed.  See LICENSE for full details

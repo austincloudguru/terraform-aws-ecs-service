@@ -71,9 +71,10 @@ variable "command" {
 variable "port_mappings" {
   description = "Port mappings for the docker Container"
   type = list(object({
-    hostPort      = number
-    containerPort = number
-    protocol      = string
+    hostPort         = number
+    containerPort    = number
+    protocol         = string
+    target_group_arn = string
   }))
   default = []
 }
@@ -153,10 +154,4 @@ variable "deploy_with_tg" {
   description = "Deploy the service group attached to a target group"
   type        = bool
   default     = false
-}
-
-variable "target_group_arns" {
-  description = "The ARNs of the Load Balancer target groups to associate with the service."
-  type        = list(string)
-  default     = null
 }
