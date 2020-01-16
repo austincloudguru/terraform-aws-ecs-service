@@ -123,7 +123,7 @@ module "task_without_alb" {
 | network_mode | The Network Mode to run the container at | string | bridge | no | 
 | log_configuration | Log configuration options to send to a custom log driver for the container | object | null | no |
 | deploy_with_tg | Deploy the service group attached to a target group | bool | false | no |
-| target_group_arn | The ARN of the Load Balancer target group to associate with the service | string | null | no |
+| target_group_arns | The ARNs of the Load Balancer target groups to associate with the service | list(string) | null | no |
 
 
 ## Outputs

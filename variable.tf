@@ -155,8 +155,8 @@ variable "deploy_with_tg" {
   default     = false
 }
 
-variable "target_group_arn" {
-  description = "The ARN of the Load Balancer target group to associate with the service."
-  type        = string
+variable "target_group_arns" {
+  description = "The ARNs of the Load Balancer target groups to associate with the service."
+  type        = list(string)
   default     = null
 }

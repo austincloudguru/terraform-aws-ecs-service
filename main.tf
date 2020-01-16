@@ -114,9 +114,9 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
 # Launch Docker Service
 #------------------------------------------------------------------------------
 resource "aws_ecs_task_definition" "this" {
-  family                = var.service_name
-  execution_role_arn    = aws_iam_role.ecs_exec_role.arn
-  network_mode          = var.network_mode
+  family             = var.service_name
+  execution_role_arn = aws_iam_role.ecs_exec_role.arn
+  network_mode       = var.network_mode
   container_definitions = jsonencode([
     {
       name             = var.service_name
@@ -166,10 +166,13 @@ resource "aws_ecs_service" "main" {
   cluster         = var.ecs_cluster_id
   desired_count   = var.service_desired_count
   iam_role        = aws_iam_role.instance_role[0].arn
-  load_balancer {
-    target_group_arn = var.target_group_arn
-    container_name   = var.service_name
-    container_port   = lookup(var.port_mappings[0], "containerPort")
+  dynamic "load_balancer" {
+    for_each = var.target_group_arns
+    content {
+      target_group_arn = load_balancer.value
+      container_name   = var.service_name
+      container_port   = lookup(var.port_mappings[load_balancer.key], "containerPort")
+    }
   }
 }
 
