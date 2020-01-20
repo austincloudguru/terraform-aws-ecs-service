@@ -160,17 +160,17 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "main" {
-  count                 = var.deploy_with_tg ? 1 : 0
-  name                  = var.service_name
-  task_definition       = aws_ecs_task_definition.this.arn
-  cluster               = var.ecs_cluster_id
-  desired_count         = var.service_desired_count
+  count           = var.deploy_with_tg ? 1 : 0
+  name            = var.service_name
+  task_definition = aws_ecs_task_definition.this.arn
+  cluster         = var.ecs_cluster_id
+  desired_count   = var.service_desired_count
   dynamic "network_configuration" {
     for_each = var.network_configuration
     content {
-      subnets = lookup(network_configuration.value, "subnets")
-      security_groups = lookup(network_configuration, "security_groups")
-      assign_public_ip = lookup(network_configuration.value, "assign_public_ip")
+      subnets          = network_configuration.value.subnets
+      security_groups  = network_configuration.value.security_groups
+      assign_public_ip = network_configuration.value.assign_public_ip
     }
   }
   dynamic "load_balancer" {
