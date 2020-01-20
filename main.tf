@@ -115,7 +115,7 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
 #------------------------------------------------------------------------------
 resource "aws_ecs_task_definition" "this" {
   family             = var.service_name
-//  execution_role_arn = aws_iam_role.ecs_exec_role.arn
+  execution_role_arn = aws_iam_role.ecs_exec_role.arn
   network_mode       = var.network_mode
   container_definitions = jsonencode([
     {
@@ -160,11 +160,12 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "main" {
-  count           = var.deploy_with_tg ? 1 : 0
-  name            = var.service_name
-  task_definition = aws_ecs_task_definition.this.arn
-  cluster         = var.ecs_cluster_id
-  desired_count   = var.service_desired_count
+  count                 = var.deploy_with_tg ? 1 : 0
+  name                  = var.service_name
+  task_definition       = aws_ecs_task_definition.this.arn
+  cluster               = var.ecs_cluster_id
+  desired_count         = var.service_desired_count
+  network_configuration = var.network_configuration
   dynamic "load_balancer" {
     for_each = var.target_groups
     content {

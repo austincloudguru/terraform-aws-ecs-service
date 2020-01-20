@@ -71,9 +71,9 @@ variable "command" {
 variable "port_mappings" {
   description = "Port mappings for the docker Container"
   type = list(object({
-    hostPort         = number
-    containerPort    = number
-    protocol         = string
+    hostPort      = number
+    containerPort = number
+    protocol      = string
   }))
   default = []
 }
@@ -154,6 +154,16 @@ variable "log_configuration" {
       name      = string
       valueFrom = string
     }))
+  })
+  default = null
+}
+
+variable "network_configuration" {
+  description = "Network configuration to be used with awsvpc networking type"
+  type = object({
+    subnets          = list(string)
+    security_groups  = list(string)
+    assign_public_ip = bool
   })
   default = null
 }

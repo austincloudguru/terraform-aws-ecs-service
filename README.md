@@ -108,8 +108,8 @@ module "task_without_alb" {
 | ecs_cluster_id | ID of the ECS cluster | string | | yes |
 | service_name | Name of the service being deployed | string | | yes |
 | image_name | Name of the image to be deployed | string | | yes |
-| port_mappings | Port mappings for the docker container | list(object) | hostPort = 12345 containerPort = 12345 protocol = "tcp" | no |
-| target_groups | Target group mappings for the docker container | list(object) | port = 12345 target_group_arn = "arn" | no |
+| port_mappings | Port mappings for the docker container | list(object) | [] | no |
+| target_groups | Target group mappings for the docker container | list(object) | [] | no |
 | mount_points | Mount points for the container | list | [] | no |
 | environment | Environmental variables to pass to the container | list | [] | no | 
 | linux_parameters | Additional Linux Parameters | object | null | no |
@@ -128,6 +128,7 @@ module "task_without_alb" {
 | command | The command that is passed to the container | list(string) | [] | no |
 | network_mode | The Network Mode to run the container at | string | bridge | no | 
 | log_configuration | Log configuration options to send to a custom log driver for the container | object | null | no |
+| network_configuration | Network configuration for awsvpc networking type | object | null | no
 | deploy_with_tg | Deploy the service group attached to a target group | bool | false | no |
 
 
