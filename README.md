@@ -18,9 +18,9 @@ module "task_with_alb" {
       readOnly      = false
     }
   ]
-  volumes = volumes = [
+  volumes = [
     {
-      host_path = "/efs/nginx_content",
+      host_path = "/efs/nginx_content"
       name      = "nginx_content"
       docker_volume_configuration = []
     }
@@ -28,9 +28,14 @@ module "task_with_alb" {
   service_desired_count = 2
   port_mappings = [
     {
-      containerPort = 80,
+      containerPort = 80
       hostPort = 8080
       protocol = "tcp"
+    }
+  ]
+  target_groups = [
+    {
+      hostPort = 8080
       target_group_arn = "arn:aws:elasticloadbalancing:us-east-2:888888888888:targetgroup/my-web-server/b8fbca622c86d2dd"
     }
   ]
@@ -44,7 +49,7 @@ module "task_with_alb" {
 module "task_without_alb" {
   source  = "lazzurs/ecs-service/aws"
   version = "0.4.0"  
-  ecs_cluster_id                = arn:aws:ecs:us-east-1:888888888888:cluster/ecs-0
+  ecs_cluster_id                = "arn:aws:ecs:us-east-1:888888888888:cluster/ecs-0"
   service_name                  = "datadog_agent"
   image_name                    = "datadog/agent:latest"
   service_cpu                   = 10
@@ -103,7 +108,8 @@ module "task_without_alb" {
 | ecs_cluster_id | ID of the ECS cluster | string | | yes |
 | service_name | Name of the service being deployed | string | | yes |
 | image_name | Name of the image to be deployed | string | | yes |
-| port_mappings | Port mappings for the docker Container | list(object) | hostPort = 12345 containerPort = 12345 protocol = "tcp" target_group_arn = "arn" | no |
+| port_mappings | Port mappings for the docker container | list(object) | hostPort = 12345 containerPort = 12345 protocol = "tcp" target_group_arn = "arn" | no |
+| target_groups | Target group mappings for the docker container | list(object) | hostPort = 12345 target_group_arn = "arn" | no |
 | mount_points | Mount points for the container | list | [] | no |
 | environment | Environmental variables to pass to the container | list | [] | no | 
 | linux_parameters | Additional Linux Parameters | object | null | no |

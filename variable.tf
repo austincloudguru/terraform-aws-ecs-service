@@ -79,6 +79,15 @@ variable "port_mappings" {
   default = []
 }
 
+variable "target_groups" {
+  description = "Target group port mappings for the docker container"
+  type = list(object({
+    hostPort         = number
+    target_group_arn = string
+  }))
+  default = []
+}
+
 variable "mount_points" {
   description = "Mount points for the container"
   type = list(object({
