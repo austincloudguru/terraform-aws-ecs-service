@@ -168,7 +168,7 @@ resource "aws_ecs_service" "main" {
   dynamic "load_balancer" {
     for_each = var.port_mappings
     content {
-      target_group_arn = lookup(load_balancer.value, "target_group_arn")
+      target_group_arn = lookup(var.target_groups.lookup(load_balancer.value, "hostPort"), "target_group_arn")
       container_name   = var.service_name
       container_port   = lookup(load_balancer.value, "containerPort")
     }
