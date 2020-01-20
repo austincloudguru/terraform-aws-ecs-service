@@ -160,11 +160,11 @@ variable "log_configuration" {
 
 variable "network_configuration" {
   description = "Network configuration to be used with awsvpc networking type"
-  type = object({
+  type = list(object({
     subnets          = list(string)
     security_groups  = list(string)
     assign_public_ip = bool
-  })
+  }))
   default = null
 }
 

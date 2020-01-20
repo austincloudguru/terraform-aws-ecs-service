@@ -168,9 +168,9 @@ resource "aws_ecs_service" "main" {
   dynamic "network_configuration" {
     for_each = var.network_configuration
     content {
-      subnets          = network_configuration.value.subnets
-      security_groups  = network_configuration.value.security_groups
-      assign_public_ip = network_configuration.value.assign_public_ip
+      subnets          = lookup(network_configuration.value, "subnets")
+      security_groups  = lookup(network_configuration.value, "security_groups")
+      assign_public_ip = lookup(network_configuration.value, "assign_public_ip")
     }
   }
   dynamic "load_balancer" {
