@@ -110,6 +110,18 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
   }
 }
 
+locals {
+  dynamic "task_port_mappings" {
+    for_each = var.port_mappings
+    content {
+      containerPort = lookup(task_port_mappings.value, "containerPort")
+      hostPort      = lookup(task_port_mappings.value, "hostPort")
+      protocol      = lookup(task_port_mappings.value, "protocol")
+    }
+  }
+
+}
+
 #------------------------------------------------------------------------------
 # Launch Docker Service
 #------------------------------------------------------------------------------
@@ -126,11 +138,11 @@ resource "aws_ecs_task_definition" "this" {
       essential        = var.essential
       privileged       = var.privileged
       command          = var.command
-      portMappings     = var.port_mappings
       mountPoints      = var.mount_points
       environment      = var.environment
       linuxParameters  = var.linux_parameters
       logConfiguration = var.log_configuration
+      portMappings     = local.task_port_mappings
     }
   ])
   dynamic "volume" {
@@ -168,7 +180,7 @@ resource "aws_ecs_service" "main" {
   dynamic "load_balancer" {
     for_each = var.port_mappings
     content {
-      target_group_arn = lookup(var.target_groups.lookup(load_balancer.value, "hostPort"), "target_group_arn")
+      target_group_arn = lookup(load_balancer.value, "target_group_arn")
       container_name   = var.service_name
       container_port   = lookup(load_balancer.value, "containerPort")
     }
