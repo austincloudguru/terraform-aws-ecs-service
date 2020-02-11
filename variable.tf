@@ -165,7 +165,7 @@ variable "network_configuration" {
     security_groups  = list(string)
     assign_public_ip = bool
   }))
-  default = null
+  default = []
 }
 
 variable "deploy_with_tg" {

@@ -128,7 +128,7 @@ module "task_without_alb" {
 | command | The command that is passed to the container | list(string) | [] | no |
 | network_mode | The Network Mode to run the container at | string | bridge | no | 
 | log_configuration | Log configuration options to send to a custom log driver for the container | object | null | no |
-| network_configuration | Network configuration for awsvpc networking type | object | null | no
+| network_configuration | Network configuration for awsvpc networking type | object | [] | no |
 | deploy_with_tg | Deploy the service group attached to a target group | bool | false | no |
 | dns_search_domains | DNS search domains to use for DNS lookups | list(string) | no | [""] |
 
