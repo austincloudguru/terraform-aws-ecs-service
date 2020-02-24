@@ -123,6 +123,7 @@ resource "aws_ecs_task_definition" "this" {
       image            = var.image_name
       cpu              = var.service_cpu
       memory           = var.service_memory
+      memoryReservation = var.memory_reservation
       essential        = var.essential
       privileged       = var.privileged
       command          = var.command

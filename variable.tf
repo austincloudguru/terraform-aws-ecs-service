@@ -45,9 +45,15 @@ variable "service_cpu" {
 }
 
 variable "service_memory" {
-  description = "Memory to Allocate"
+  description = "Hard memory to allocate"
   type        = number
-  default     = 1024
+  default     = null
+}
+
+variable "memory_reservation" {
+  description = "Soft Memory to Allocate"
+  type        = number
+  default     = 512
 }
 
 variable "essential" {
