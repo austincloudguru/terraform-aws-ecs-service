@@ -177,5 +177,5 @@ variable "deploy_with_tg" {
 variable "dns_search_domains" {
   description = "List of DNS domains to search when a lookup happens"
   type        = list(string)
-  default     = [""]
+  default     = null
 }
