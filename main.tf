@@ -132,6 +132,7 @@ resource "aws_ecs_task_definition" "this" {
       logConfiguration = var.log_configuration
       portMappings     = var.port_mappings
       dnsSearchDomains = var.dns_search_domains
+      secrets          = var.secrets
     }
   ])
   dynamic "volume" {
@@ -166,7 +167,7 @@ resource "aws_ecs_service" "main" {
   task_definition = aws_ecs_task_definition.this.arn
   cluster         = var.ecs_cluster_id
   desired_count   = var.service_desired_count
-  iam_role = ""
+  iam_role        = ""
   dynamic "network_configuration" {
     for_each = var.network_configuration
     content {

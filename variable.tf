@@ -179,3 +179,12 @@ variable "dns_search_domains" {
   type        = list(string)
   default     = null
 }
+
+variable "secrets" {
+  description = "List of secrets to add"
+  type = list(object({
+    name = string
+    valuefrom = string
+  }))
+  default = []
+}
