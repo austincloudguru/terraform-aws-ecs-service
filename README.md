@@ -5,7 +5,7 @@ Terraform module for creating an ECS service.  This module is deprecated and has
 ```hcl
 module "task_with_alb" {
   source  = "AustinCloudGuru/ecs-service/aws"
-  version = "0.3.0"
+  version = "0.3.2"
   ecs_cluster_id = arn:aws:ecs:us-east-1:888888888888:cluster/ecs-0
   image_name = nginx:latest
   service_name = my-web-server
