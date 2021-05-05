@@ -1,5 +1,5 @@
-# terraform-module-ecs-service
-Terraform module for creating an ECS service.
+# terraform-module-ecs-service [[ DEPRECATED ]]
+Terraform module for creating an ECS service.  This module is deprecated and has been rolled into the ECS module as a sub-module: https://registry.terraform.io/modules/AustinCloudGuru/ecs/aws/latest
 
 ## Deploying a service with a Load Balancer
 ```hcl
